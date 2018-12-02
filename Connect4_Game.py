@@ -23,7 +23,7 @@ Y_margin = int((window_height - board_height * space) / 2) # Calculate Y-Margin
 
 """ End of Configuration Area """
 
-main():
+def main():
     if board_width < 4 and board_height < 4:
         print("Invalid board_width or board_height")
         exit()
