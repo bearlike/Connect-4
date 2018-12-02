@@ -1,5 +1,5 @@
 # ==============================================================================
-# Made by Krishna Alagiri, https://github.com/KrishnaAlagiri                   |
+# Created by Krishna Alagiri, https://github.com/KrishnaAlagiri                   |
 # Started on Decemeber 11:00 PM, 03/12/2018                                    |
 # ==============================================================================
 import random
@@ -27,6 +27,13 @@ main():
     if board_width < 4 and board_height < 4:
         print("Invalid board_width or board_height")
         exit()
+    pygame.init()
+    clock = pygame.time.Clock()
+    screen = pygame.display.set_mode((window_width, window_height))
+    pygame.display.set_caption('Connect 4: Created by Krishna Alagiri')
+    screen.fill(bgcolour)
+
+
 
 if __name__ == '__main__':
     main()
