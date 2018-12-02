@@ -1,6 +1,6 @@
 # ==============================================================================
 # Made by Krishna Alagiri, https://github.com/KrishnaAlagiri                   |
-# Started on Decemeber 11:00 PM, 03/12/2018                                              |
+# Started on Decemeber 11:00 PM, 03/12/2018                                    |
 # ==============================================================================
 import random
 import copy
