@@ -33,8 +33,16 @@ def DrawBoard(board, extraToken=None):
     screen.fill(bgcolour)
     screen.blit(redtoken_img, redpilerect) # red on the left
     screen.blit(yellowtoken_img, yellowpilerect) # YELLOW on the right
-
+    pygame.display.update()
     pass
+
+def isBoardFull(board):
+    # Returns True if there are no empty spaces anywhere on the board.
+    for x in range(board_width):
+        for y in range(board_height):
+            if board[x][y] == EMPTY:
+                return False
+    return True
 
 
 def runGAME():
@@ -60,8 +68,6 @@ def runGAME():
             breaks
     """
     DrawBoard(mainBoard)
-    pygame.display.update()
-    pass
 
 def resetBoard():
     board = []
