@@ -31,6 +31,9 @@ EMPTY = None
 
 def DrawBoard(board, extraToken=None):
     screen.fill(bgcolour)
+    screen.blit(redtoken_img, redpilerect) # red on the left
+    screen.blit(yellowtoken_img, yellowpilerect) # YELLOW on the right
+
     pass
 
 
@@ -38,6 +41,7 @@ def runGAME():
     turn = p1
     # Set up a blank board data structure.
     mainBoard = resetBoard()
+    """
     while True: # main game loop
         # Player 1
         if turn == p1:
@@ -54,13 +58,15 @@ def runGAME():
         # Tie
         if isBoardFull(mainBoard):
             breaks
+    """
     DrawBoard(mainBoard)
+    pygame.display.update()
     pass
 
 def resetBoard():
     board = []
     for x in range(0, board_width):
-        board.append([empty]*board_height)
+        board.append([EMPTY]*board_height)
     return board
 
 def main():
@@ -76,6 +82,15 @@ def main():
     clock = pygame.time.Clock()
     screen = pygame.display.set_mode((window_width, window_height))
     pygame.display.set_caption('Connect 4: Created by Krishna Alagiri')
+
+    redpilerect = pygame.Rect(int(space / 2), window_height - int(3 * space / 2), space, space)
+    yellowpilerect = pygame.Rect(window_width - int(3 * space / 2), window_height - int(3 * space / 2), space, space)
+    redtoken_img = pygame.image.load('red_coin.png')
+    redtoken_img = pygame.transform.smoothscale(redtoken_img, (space, space))
+    yellowtoken_img = pygame.image.load('yellow_coin.png')
+    yellowtoken_img = pygame.transform.smoothscale(yellowtoken_img, (space, space))
+    board_img = pygame.image.load('board_piece.png')
+    board_img = pygame.transform.smoothscale(board_img, (space, space))
 
     runGAME()
 
