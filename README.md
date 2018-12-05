@@ -16,6 +16,9 @@ Connect Four is a two-player connection game in which the players first choose a
 
 <img src="/src/images/output_1.png" width="394" height="354"/>
 
+The board size can be adjusted by changing values of `board_width` and `board_height` in program (default set to 4x6). Similarly, the PyGame window size can be adjusted by changing values of `window_width` and `window_height` (default set to 640x480).
+
+Also feel free to pass on remarks and suggestions to increase the quality of the code.
 
 Prerequisites
 --------------
