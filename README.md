@@ -31,7 +31,7 @@ How To Play
 - If you have the correct version of Python and Pygame installed, you can run the program in the command prompt / terminal.
  ``` bash
 cd connect-4
-python connect-4.py
+python Connect4_Game.py
  ```
 - Drag and drop coins at the column you want to make a move.
 - Use the terminal window to view moments and other details.
