@@ -244,12 +244,7 @@ def main():
         board_img = pygame.transform.smoothscale(board_img, (space, space))
     except:
         pygame.display.quit()
-<<<<<<< HEAD
         print("\nImages(s) Not Found in */images")
-=======
-        print()
-        print("Images(s) Not Found in */images")
->>>>>>> 7c073ac9fe5f46168147a98f60e1889b31a91270
         print("Place files in */images and restart the program")
         print("Press any key to continue...")
         msvcrt.getch()
