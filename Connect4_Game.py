@@ -2,10 +2,11 @@
 # Connect-4                                                                    |
 # Created by Krishna Alagiri, https://github.com/KrishnaAlagiri                |
 # Started on Decemeber 11:00 PM, 03/12/2018                                    |
-# Status: COMPLETED on 19:00 PM, 05/12/2018                                    |                           |
+# Status: COMPLETED on 19:00 PM, 05/12/2018                                    |
 # ==============================================================================
 import random
 import os
+import msvcrt
 import copy
 import sys
 import pygame
@@ -102,6 +103,7 @@ def checkValid(board, column):
     return True
 
 def P1_getMove(board):
+    global p1Count
     draggingToken = False
     tokenx, tokeny = None, None
     while True:
@@ -122,7 +124,10 @@ def P1_getMove(board):
                     # let go at the top of the screen.
                     column = int((tokenx - X_margin) / space)
                     if checkValid(board, column):
-                        board[column][getFirstEmpty(board, column)] = red
+                        FE = getFirstEmpty(board, column)
+                        p1Count = p1Count +1
+                        print("Player 1 (Red) moves @ ["+str(column) + "," + str(FE) + "]")
+                        board[column][FE] = red
                         DrawBoard(board)
                         pygame.display.update()
                         return
@@ -137,6 +142,7 @@ def P1_getMove(board):
         clock.tick()
 
 def P2_getMove(board):
+    global p2Count
     draggingToken = False
     tokenx, tokeny = None, None
     while True:
@@ -157,7 +163,10 @@ def P2_getMove(board):
                     # let go at the top of the screen.
                     column = int((tokenx - X_margin) / space)
                     if checkValid(board, column):
-                        board[column][getFirstEmpty(board, column)] = yellow
+                        FE = getFirstEmpty(board, column)
+                        p2Count = p2Count +1
+                        print("Player 2 (Yellow) moves @ ["+str(column) + "," + str(FE) + "]")
+                        board[column][FE] = yellow
                         DrawBoard(board)
                         pygame.display.update()
                         return
@@ -175,24 +184,34 @@ def mainGame():
     turn = p1
     # Set up a blank board data structure.
     mainBoard = resetBoard()
+    os.system("cls")
+    print("  Connect 4: Created by Krishna Alagiri")
+    print("===========================================")
+    print()
     while True: # main game loop
         # Player 1
         if turn == p1:
             P1_getMove(mainBoard)
             if checkWin(mainBoard, red):
-                print("Player 1 won the game!")
+                print("Player 1 won the game in "+ str(p1Count) +" moves!")
+                print("Press any key to continue...")
+                msvcrt.getch()
                 break
             turn = p2
         # Player 2
         else:
             P2_getMove(mainBoard)
             if checkWin(mainBoard, yellow):
-                print("Player 2 won the game!")
+                print("Player 2 won the game in "+ str(p2Count) +" moves!")
+                print("Press any key to continue...")
+                msvcrt.getch()
                 break
             turn = p1
         # Tie
         if checkFull(mainBoard):
             print("The game is Tie!")
+            print("Press any key to continue...")
+            msvcrt.getch()
             breaks
     DrawBoard(mainBoard)
 
@@ -209,13 +228,11 @@ def main():
 
     global clock, screen, redpilerect, yellowpilerect, redtoken_img
     global yellowtoken_img, board_img, p1w_img
-    global p2w_img, winnerrect, tie_img
-
+    global p2w_img, winnerrect, tie_img, p1Count, p2Count
     pygame.init()
     clock = pygame.time.Clock()
     screen = pygame.display.set_mode((window_width, window_height))
     pygame.display.set_caption('Connect 4: Created by Krishna Alagiri')
-
     redpilerect = pygame.Rect(int(space / 2), window_height - int(3 * space / 2), space, space)
     yellowpilerect = pygame.Rect(window_width - int(3 * space / 2), window_height - int(3 * space / 2), space, space)
     redtoken_img = pygame.image.load('red_coin.png')
@@ -225,6 +242,8 @@ def main():
     board_img = pygame.image.load('board_piece.png')
     board_img = pygame.transform.smoothscale(board_img, (space, space))
 
+    p1Count = 0
+    p2Count = 0
     mainGame()
 
 if __name__ == '__main__':
