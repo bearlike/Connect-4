@@ -1,9 +1,11 @@
 # ==============================================================================
+# Connect-4                                                                    |
 # Created by Krishna Alagiri, https://github.com/KrishnaAlagiri                |
 # Started on Decemeber 11:00 PM, 03/12/2018                                    |
-# Status: COMPLETED on 19:00 PM, 05/12/2018                                                           |
+# Status: COMPLETED on 19:00 PM, 05/12/2018                                    |                           |
 # ==============================================================================
 import random
+import os
 import copy
 import sys
 import pygame
@@ -169,7 +171,7 @@ def P2_getMove(board):
         pygame.display.update()
         clock.tick()
 
-def runGAME():
+def mainGame():
     turn = p1
     # Set up a blank board data structure.
     mainBoard = resetBoard()
@@ -178,16 +180,19 @@ def runGAME():
         if turn == p1:
             P1_getMove(mainBoard)
             if checkWin(mainBoard, red):
+                print("Player 1 won the game!")
                 break
             turn = p2
         # Player 2
         else:
             P2_getMove(mainBoard)
             if checkWin(mainBoard, yellow):
+                print("Player 2 won the game!")
                 break
             turn = p1
         # Tie
         if checkFull(mainBoard):
+            print("The game is Tie!")
             breaks
     DrawBoard(mainBoard)
 
@@ -220,7 +225,7 @@ def main():
     board_img = pygame.image.load('board_piece.png')
     board_img = pygame.transform.smoothscale(board_img, (space, space))
 
-    runGAME()
+    mainGame()
 
 if __name__ == '__main__':
     main()
