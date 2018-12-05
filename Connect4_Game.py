@@ -1,7 +1,7 @@
 # ==============================================================================
 # Created by Krishna Alagiri, https://github.com/KrishnaAlagiri                |
 # Started on Decemeber 11:00 PM, 03/12/2018                                    |
-# Status: NOT COMPLETED                                                        |
+# Status: COMPLETED on 19:00 PM, 05/12/2018                                                           |
 # ==============================================================================
 import random
 import copy
@@ -10,7 +10,6 @@ import pygame
 from pygame.locals import *
 
 """ Configuration Area """
-
 board_width = 4 # Width of the Board (Should not be less than 4)
 board_height = 6 # Height of the Board (Should not be less than 4)
 space = 50 # Size of the each tokens and individual board spaces (in pixels)
@@ -27,16 +26,67 @@ red = 'red'
 yellow = 'yellow'
 EMPTY = None
 """ End of Configuration Area """
-""" Functions Begin """
+
+def getFirstEmpty(board, column):
+    # Returns the lowest empty row in the given column.
+    for y in range(board_height-1, -1, -1):
+        if board[column][y] == EMPTY:
+            return y
+    return -1
+
+def checkWin(board, tile):
+    # check -- horizontal spaces
+    for x in range(board_width - 3):
+        for y in range(board_height):
+            if board[x][y] == tile and board[x+1][y] == tile and board[x+2][y] == tile and board[x+3][y] == tile:
+                return True
+    # check | vertical spaces
+    for x in range(board_width):
+        for y in range(board_height - 3):
+            if board[x][y] == tile and board[x][y+1] == tile and board[x][y+2] == tile and board[x][y+3] == tile:
+                return True
+    # check / diagonal spaces
+    for x in range(board_width - 3):
+        for y in range(3, board_height):
+            if board[x][y] == tile and board[x+1][y-1] == tile and board[x+2][y-2] == tile and board[x+3][y-3] == tile:
+                return True
+    # check \ diagonal spaces
+    for x in range(board_width - 3):
+        for y in range(board_height - 3):
+            if board[x][y] == tile and board[x+1][y+1] == tile and board[x+2][y+2] == tile and board[x+3][y+3] == tile:
+                return True
+    return False
 
 def DrawBoard(board, extraToken=None):
     screen.fill(bgcolour)
+    # draw tokens
+    spaceRect = pygame.Rect(0, 0, space, space)
+    for x in range(board_width):
+        for y in range(board_height):
+            spaceRect.topleft = (X_margin + (x * space), Y_margin + (y * space))
+            if board[x][y] == red:
+                screen.blit(redtoken_img, spaceRect)
+            elif board[x][y] == yellow:
+                screen.blit(yellowtoken_img, spaceRect)
+    # draw the extra token
+    if extraToken != None:
+        if extraToken['color'] == red:
+            screen.blit(redtoken_img, (extraToken['x'], extraToken['y'], space, space))
+        elif extraToken['color'] == yellow:
+            screen.blit(yellowtoken_img, (extraToken['x'], extraToken['y'], space, space))
+
+    # draw board over the tokens
+    for x in range(board_width):
+        for y in range(board_height):
+            spaceRect.topleft = (X_margin + (x * space), Y_margin + (y * space))
+            screen.blit(board_img, spaceRect)
+
     screen.blit(redtoken_img, redpilerect) # red on the left
     screen.blit(yellowtoken_img, yellowpilerect) # YELLOW on the right
     pygame.display.update()
     pass
 
-def isBoardFull(board):
+def checkFull(board):
     # Returns True if there are no empty spaces anywhere on the board.
     for x in range(board_width):
         for y in range(board_height):
@@ -44,29 +94,101 @@ def isBoardFull(board):
                 return False
     return True
 
+def checkValid(board, column):
+    if column < 0 or column >= (board_width) or board[column][0] != EMPTY:
+        return False
+    return True
+
+def P1_getMove(board):
+    draggingToken = False
+    tokenx, tokeny = None, None
+    while True:
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == MOUSEBUTTONDOWN and not draggingToken and redpilerect.collidepoint(event.pos):
+                # start of dragging on red token pile.
+                draggingToken = True
+                tokenx, tokeny = event.pos
+            elif event.type == MOUSEMOTION and draggingToken:
+                # update the position of the red token being dragged
+                tokenx, tokeny = event.pos
+            elif event.type == MOUSEBUTTONUP and draggingToken:
+                # let go of the token being dragged
+                if tokeny < Y_margin and tokenx > X_margin and tokenx < window_width - X_margin:
+                    # let go at the top of the screen.
+                    column = int((tokenx - X_margin) / space)
+                    if checkValid(board, column):
+                        board[column][getFirstEmpty(board, column)] = red
+                        DrawBoard(board)
+                        pygame.display.update()
+                        return
+                tokenx, tokeny = None, None
+                draggingToken = False
+        if tokenx != None and tokeny != None:
+            DrawBoard(board, {'x':tokenx - int(space / 2), 'y':tokeny - int(space / 2), 'color':red})
+        else:
+            DrawBoard(board)
+
+        pygame.display.update()
+        clock.tick()
+
+def P2_getMove(board):
+    draggingToken = False
+    tokenx, tokeny = None, None
+    while True:
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == MOUSEBUTTONDOWN and not draggingToken and yellowpilerect.collidepoint(event.pos):
+                # start of dragging on yellow token pile.
+                draggingToken = True
+                tokenx, tokeny = event.pos
+            elif event.type == MOUSEMOTION and draggingToken:
+                # update the position of the yellow token being dragged
+                tokenx, tokeny = event.pos
+            elif event.type == MOUSEBUTTONUP and draggingToken:
+                # let go of the token being dragged
+                if tokeny < Y_margin and tokenx > X_margin and tokenx < window_width - X_margin:
+                    # let go at the top of the screen.
+                    column = int((tokenx - X_margin) / space)
+                    if checkValid(board, column):
+                        board[column][getFirstEmpty(board, column)] = yellow
+                        DrawBoard(board)
+                        pygame.display.update()
+                        return
+                tokenx, tokeny = None, None
+                draggingToken = False
+        if tokenx != None and tokeny != None:
+            DrawBoard(board, {'x':tokenx - int(space / 2), 'y':tokeny - int(space / 2), 'color':yellow})
+        else:
+            DrawBoard(board)
+
+        pygame.display.update()
+        clock.tick()
 
 def runGAME():
     turn = p1
     # Set up a blank board data structure.
     mainBoard = resetBoard()
-    """
     while True: # main game loop
         # Player 1
         if turn == p1:
             P1_getMove(mainBoard)
-            if isWinner(mainBoard, red):
+            if checkWin(mainBoard, red):
                 break
             turn = p2
         # Player 2
         else:
             P2_getMove(mainBoard)
-            if isWinner(mainBoard, yellow):
+            if checkWin(mainBoard, yellow):
                 break
             turn = p1
         # Tie
-        if isBoardFull(mainBoard):
+        if checkFull(mainBoard):
             breaks
-    """
     DrawBoard(mainBoard)
 
 def resetBoard():
